@@ -73,106 +73,138 @@
     // ❗ Debug properly using the Console
 
     // 👉 CHALLENGE 1
+    
+    
     function profileActivation(profile, reason) {
-    if (!('active' in profile)) {
-        return "impossible to ascertain status";
+  if (profile.active === undefined) return "impossible to ascertain status";
+  if ((profile.active && 'reason' in profile) || (!profile.active && !('reason' in profile))) return "confirm status manually";
+
+  if (profile.active) {
+    profile.active = false;
+    profile.reason = reason;
+  } else {
+    profile.active = true;
+    delete profile.reason;
+  }
+
+  return profile;
+}
+
+
+
+    // 👉 CHALLENGE 2
+    function mineSweeper(grid, x, y) {
+    if (x < 1 || x > 3 || y < 1 || y > 3) {
+        return "invalid coordinates";
     }
     
-    if (profile.active) {
-        if ('reason' in profile) {
-            return "confirm status manually";
-        } else {
-            delete profile.reason;
-            return profile;
-        }
-    } else {
-        if ('reason' in profile) {
-            return "confirm status manually";
-        } else {
-            if (reason === undefined) {
-                return "confirm status manually";
-            } else {
-                profile.active = true;
-                profile.reason = reason;
-                return profile;
-            }
-        }
+    const square = grid[y - 1][x - 1];
+    
+    if (square === "🟥") {
+        return "🟥 💀";
+    } else if (square === "🟦") {
+        return "🟦 🥳";
     }
 }
 
-    // 👉 CHALLENGE 2
-    function mineSweeper() {
-      // 🧠 mineSweeper takes a grid as its first argument, and coordinates x and y as the second and third args
-      //  The grid is an array of arrays in the following format: [["🟥","🟦","🟥"],["🟦","🟥","🟥"],["🟥","🟦","🟦"]]
-      //  Each subarray is a row of the grid, the first subarray being the top row:
-      //  [
-      //    ["🟥", "🟦", "🟥"],
-      //    ["🟦", "🟥", "🟥"],
-      //    ["🟥", "🟦", "🟦"]
-      //  ]
-      // The subarrays can contain any mix of red and blue squares
-      // The coordinates x and y are numbers: either 1 or 2 or 3
-      //    * An x = 1 and y = 1 means the top-left square
-      //    * An x = 3 and y = 1 means the top-right square
-      //    * An x = 3 and y = 3 means the bottom-right square
-      //  Red squares are mines and blue squares are safe
-      //    * If mineSweeper is called with such coordinates that the player lands on red, return the string "🟥 💀"
-      //    * If the player lands on blue, return the string "🟦 🥳"
-      // 🧠 Edge cases:
-      //    * If the x or y coordinates are under 1 or over 3, return the string "invalid coordinates"
-    }
-
     // 👉 CHALLENGE 3
-    function booleanize() {
-      // 🧠 booleanize takes an object as its single argument, which can have any number of properties
-      // Loop over the properties and then return the object, after applying the following transformations:
-      //    * If a value is the number zero, it must be transformed into the Boolean false
-      //    * If a value is the number one, it must be transformed into the Boolean true
-      //    * If a value is null, the whole key-value pair must be deleted from the object
-      // 🧠 Edge cases:
-      //    * If a property name exceeds 9 characters, return the string "shorten all prop names to 9 chars or less"
-      // 🌟 HINT: careful not to perform any unintended changes on the object
+    function booleanize(obj) {
+    for (let prop in obj) {
+        if (prop.length > 9) {
+            return "shorten all prop names to 9 chars or less";
+        }
+        
+        if (obj[prop] === 0) {
+            obj[prop] = false;
+        } else if (obj[prop] === 1) {
+            obj[prop] = true;
+        } else if (obj[prop] === null) {
+            delete obj[prop];
+        }
     }
-
+    return obj;
+}
     // 👉 CHALLENGE 4
-    function scrub() {
-      // 🧠 scrub takes a string "text" as its first argument, and an array of forbidden words "forbidden" as its second
-      // Any word in the text included in the array of forbidden words is replaced with a word of equal length but made of lowcase "x"
-      // The scrubbed text is then returned from the function, as seen in the examples below
-      // No punctuation is used in the text
-      // 🧠 Examples of usage:
-      //    scrub("out of the silent planet", ["of", "silent"]) // returns "out xx the xxxxxx planet"
-      //    scrub("the ghost of the navigator", ["the"]) // returns "xxx ghost of xxx navigator"
-      //    scrub("lost somewhere in time", []) // returns "lost somewhere in time"
-      //    scrub("aces high", ["high", "aces", "hearts"]) // returns "xxxx xxxx"
-      //    scrub("", ["high", "aces""]) // returns ""
-      // 🌟 HINT: useful array methods to use are `push`, `indexOf`, `split`, `join`
+    function scrub(text, forbidden) {
+    if (!text) {
+        return "";
     }
+    
+    if (!forbidden.length) {
+        return text;
+    }
+    
+    const words = text.split(" ");
+    const scrubbedWords = words.map(word => {
+        if (forbidden.includes(word)) {
+            return "x".repeat(word.length);
+        } else {
+            return word;
+        }
+    });
+    
+    return scrubbedWords.join(" ");
+}
 
     // 👉 CHALLENGE 5
-    function normalizePhoneNumber() {
-      // 🧠 normalizePhoneNumber takes a string as its only argument, representing a ten-digit number
-      // The function returns a string formatted as seen below
-      // 🧠 Examples of usage:
-      // normalizePhoneNumber("9876543210") // returns "(987) 654-3210"
-      // normalizePhoneNumber("1111111111") // returns "(111) 111-1111"
-      // 🧠 Edge cases:
-      //   * If the argument is of an incorrect length, return the string "type a 10-digit number"
-      //   * If the argument is of the correct length but any character is not an integer between 0 and 9, return "invalid phone number"
-      // 🌟 HINT: instead of looping over the number's digits, loop backwards over a template "(XXX) XXX-XXXX"
-      // 🌟 HINT: at each iteration, if the current character is an "X", replace it with the result of popping a digit from the number
-      // 🌟 HINT: if you'd rather loop forwards, use `shift` instead of `pop`
+    function normalizePhoneNumber(number) {
+    if (number.length !== 10) {
+        return "type a 10-digit number";
     }
+    
+    const template = "(XXX) XXX-XXXX";
+    let normalized = "";
+    
+    for (let i = template.length - 1; i >= 0; i--) {
+        if (template[i] === "X") {
+            const digit = number.charAt(number.length - 1);
+            if (!/\d/.test(digit)) {
+                return "invalid phone number";
+            }
+            normalized = digit + normalized;
+            number = number.slice(0, -1);
+        } else {
+            normalized = template[i] + normalized;
+        }
+    }
+    
+    return normalized;
+}
 
     // 👉 CHALLENGE 6 (bonus, NOT graded)
     function diceRolls() {
-      // 🧠 diceRolls takes no arguments and returns a number
-      // The function throws a six-sided dice until 3 sixes in a row are obtained
-      // The number of throws it took to obtain that third-in-a-row six is then returned from the function
-      // 🌟 HINT: research using `Math.random` to obtain a number from 1 to 6
-      // 🌟 HINT: use `while(true)` to throw the dice indefinitely, but avoid an infinite loop by making sure to break out eventually
-      // 🌟 HINT: you need to keep track of the total number of throws, as well as how many sixes in a row
+    let count = 0;
+    let sixes = 0;
+    
+    while (true) {
+        const roll = Math.floor(Math.random() * 6) + 1;
+        throws++;
+        
+        if (roll === 6) {
+            function profileActivation(profile, reason) {
+  if (profile.active === undefined) return "impossible to ascertain status";
+  if ((profile.active && 'reason' in profile) || (!profile.active && !('reason' in profile))) return "confirm status manually";
+
+  if (profile.active) {
+    profile.active = false;
+    profile.reason = reason;
+  } else {
+    profile.active = true;
+    delete profile.reason;
+  }
+
+  return profile;
+}sixes++;
+            if (sixes === 3) {
+                break;
+            }
+        } else {
+            sixes = 0;
+        }
     }
+    
+    return throws;
+}
 
     // 🧪 TESTS, do not make any changes below this line ===================
     // 🧪 TESTS, do not make any changes below this line ===================
