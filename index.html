@@ -73,19 +73,32 @@
     // ❗ Debug properly using the Console
 
     // 👉 CHALLENGE 1
-    function profileActivation() {
-      // 🧠 profileActivation takes two arguments, profile and reason, which are an object and a string respectively
-      //  The reason arg is only used -and therefore required- to deactivate profiles, not to activate them
-      //  The profile arg has an `active` property holding a Boolean value
-      //    * If profile is active, profileActivation deactivates it and writes a `reason` prop holding the reason
-      //    * If profile is inactive, profileActivation activates it and deletes the `reason` prop from the object
-      //    * In both cases the updated profile object is returned
-      // 🧠 Edge cases:
-      //    * If the profile is inactive but its `reason` prop is **missing**, return the string "confirm status manually"
-      //    * If the profile is active but it has a `reason` prop, return the string "confirm status manually"
-      //    * If the profile is **missing** an `active` prop, return the string "impossible to ascertain status"
-      // 🌟 HINT: to confirm the existence of a prop, check that its value is not undefined
+    function profileActivation(profile, reason) {
+    if (!('active' in profile)) {
+        return "impossible to ascertain status";
     }
+    
+    if (profile.active) {
+        if ('reason' in profile) {
+            return "confirm status manually";
+        } else {
+            delete profile.reason;
+            return profile;
+        }
+    } else {
+        if ('reason' in profile) {
+            return "confirm status manually";
+        } else {
+            if (reason === undefined) {
+                return "confirm status manually";
+            } else {
+                profile.active = true;
+                profile.reason = reason;
+                return profile;
+            }
+        }
+    }
+}
 
     // 👉 CHALLENGE 2
     function mineSweeper() {
